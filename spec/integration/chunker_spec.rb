@@ -16,6 +16,8 @@ describe Lhm::Chunker do
       @destination = table_create(:destination)
       @migration = Lhm::Migration.new(@origin, @destination)
       @logs = StringIO.new
+
+      @active_record_config = {username: 'user', password: 'pw', database: 'db'}
       Lhm.logger = Logger.new(@logs)
     end
 
@@ -169,6 +171,8 @@ describe Lhm::Chunker do
     it 'should copy 23 rows from origin to destination in one shot with slave lag based throttler, regardless of the value of the id' do
       23.times { |n| execute("insert into origin set id = '#{ 100000 + n * n + 23 }'") }
 
+      ActiveRecord::Base.stubs(:connection_pool).returns(stub(spec: stub(config: @active_record_config)))
+
       printer = MiniTest::Mock.new
       printer.expect(:notify, :return_value, [Integer, Integer])
       printer.expect(:end, :return_value, [])
@@ -209,6 +213,8 @@ describe Lhm::Chunker do
 
     it 'should detect a single slave with no lag in the default configuration' do
       15.times { |n| execute("insert into origin set id = '#{ (n * n) + 1 }'") }
+
+      ActiveRecord::Base.stubs(:connection_pool).returns(stub(spec: stub(config: @active_record_config)))
 
       printer = mock()
       printer.expects(:notify).with(instance_of(Integer), instance_of(Integer)).twice

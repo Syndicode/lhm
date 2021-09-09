@@ -6,6 +6,7 @@ query_parser_token_delimiters=","
 query_parser_key_value_delimiters=":"
 unit_of_work_identifiers="consistent_read_id"
 
+
 admin_variables=
 {
   mysql_ifaces="0.0.0.0:6032"

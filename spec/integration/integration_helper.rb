@@ -6,7 +6,7 @@ require 'active_support'
 require 'logger'
 
 begin
-  $db_config = YAML.load_file(File.expand_path(File.dirname(__FILE__)) + '/database.yml')
+  $db_config = YAML.load_file(File.expand_path(File.dirname(__FILE__)) + '/database-new.yml')
 rescue StandardError => e
   puts "Run install.sh to setup database"
   raise e
@@ -33,6 +33,15 @@ module IntegrationHelper
   #
   def connection
     @connection
+  end
+
+  def connect_proxysql!
+    connect!(
+      '127.0.0.1',
+      $db_config['proxysql']['port'],
+      $db_config['proxysql']['user'],
+      $db_config['proxysql']['password'],
+      )
   end
 
   def connect_master!
@@ -70,9 +79,12 @@ module IntegrationHelper
       :username => user,
       :port     => port,
       :password => password,
-      :database => $db_name
     )
-    ActiveRecord::Base.connection
+
+    conn = ActiveRecord::Base.connection
+
+    init_test_db_ar(conn)
+    conn
   end
 
   def select_one(*args)
@@ -119,7 +131,7 @@ module IntegrationHelper
   # Helps testing behaviour when another client locks the db
   def start_locking_thread(lock_for, queue, locking_query)
     Thread.new do
-      conn = Mysql2::Client.new(host: '127.0.0.1', database: $db_name, user: 'root', port: 3306)
+      conn = new_mysql_connection
       conn.query('BEGIN')
       conn.query(locking_query)
       queue.push(true)
@@ -155,14 +167,16 @@ module IntegrationHelper
   end
 
   def new_mysql_connection(role='master')
-    Mysql2::Client.new(
+    client = Mysql2::Client.new(
       host: '127.0.0.1',
-      database: $db_name,
       username: $db_config[role]['user'],
       password: $db_config[role]['password'],
       port: $db_config[role]['port'],
       socket: $db_config[role]['socket']
     )
+
+    init_test_db(client)
+    client
   end
 
   #
@@ -232,5 +246,17 @@ module IntegrationHelper
       alias_method :after, :old_after
       undef_method :old_after
     end
+  end
+
+  private
+
+  def init_test_db(conn)
+    conn.query("CREATE DATABASE IF NOT EXISTS #{$db_name}")
+    conn.select_db($db_name)
+  end
+
+  def init_test_db_ar(conn)
+    conn.execute("CREATE DATABASE IF NOT EXISTS #{$db_name}")
+    conn.execute("USE #{$db_name}")
   end
 end

@@ -1,5 +1,7 @@
-require 'yaml'
+require 'integration/integration_helper'
+
 class LockWaitTimeoutTestHelper
+
   def initialize(lock_duration:, innodb_lock_wait_timeout:)
     # This connection will be used exclusively to setup the test,
     # assert pre-conditions and assert post-conditions.
@@ -32,7 +34,7 @@ class LockWaitTimeoutTestHelper
   def hold_lock(seconds = lock_duration, queue = @queue)
     # We are intentionally choosing to create a gap in the between the IDs to
     # create a gap lock.
-    insert_records_at_ids(main_conn, [1001,1003])
+    insert_records_at_ids(main_conn, [1001, 1003])
     locked_id = 1002
 
     # This is the locking thread. It creates gap lock. It must be created first.
@@ -84,9 +86,7 @@ class LockWaitTimeoutTestHelper
       port: db_config['master']['port']
     )
 
-    # For some reasons sometimes the database does not exist
-    client.query("CREATE DATABASE IF NOT EXISTS #{test_db_name}")
-    client.select_db(test_db_name)
+    init_test_db(client)
     client
   end
 
@@ -95,10 +95,18 @@ class LockWaitTimeoutTestHelper
   end
 
   def db_config
-    @db_config ||= YAML.load_file(File.expand_path(File.dirname(__FILE__)) + '/../database.yml')
+    @db_config ||= YAML.load_file(File.expand_path(File.dirname(__FILE__)) + '/../database-new.yml')
   end
 
   def test_table_name
     @test_table_name ||= "lock_wait"
+  end
+
+  private
+
+  def init_test_db(client)
+    # For some reasons sometimes the database does not exist
+    client.query("CREATE DATABASE IF NOT EXISTS #{test_db_name}")
+    client.select_db(test_db_name)
   end
 end

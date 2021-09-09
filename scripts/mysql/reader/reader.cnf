@@ -1,0 +1,17 @@
+[mysqld]
+socket=/var/lib/mysql/mysql.sock
+user=mysql
+read_only=ON
+log_bin=/var/lib/mysql/mysql-bin
+relay-log=/var/log/mysql/mysql-relay-bin.log
+binlog_format=row
+binlog_row_image=minimal
+log_slave_updates=1
+gtid_mode=ON
+enforce_gtid_consistency=ON
+innodb_lock_wait_timeout=10
+lock_wait_timeout=10
+show_compatibility_56=ON
+log_slave_updates=1
+server_id=2
+max-connections=10000

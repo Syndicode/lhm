@@ -8,6 +8,8 @@ describe Lhm::SqlRetry, "ProxiSQL tests for LHM retry" do
 
   before(:each) do
     #TODO fix this with proxysql
+    skip("Feature to be implemented before test")
+    #
     @old_logger = Lhm.logger
     @logger = StringIO.new
     Lhm.logger = Logger.new(@logger)
@@ -38,6 +40,7 @@ describe Lhm::SqlRetry, "ProxiSQL tests for LHM retry" do
   end
 
   it "Will retry until connection with previous host is achieved" do
+    skip("Not implemented")
     lhm_retry = Lhm::SqlRetry.new(@connection)
 
 
@@ -48,7 +51,6 @@ describe Lhm::SqlRetry, "ProxiSQL tests for LHM retry" do
   end
 
   it "Will abort LHM if it cannot get the same host" do
-
+    skip("Not implemented")
   end
-
 end

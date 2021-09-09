@@ -10,6 +10,7 @@ require 'minitest/autorun'
 require 'minitest/spec'
 require 'minitest/mock'
 require 'mocha/minitest'
+require 'byebug'
 require 'pathname'
 require 'lhm'
 

@@ -1,0 +1,15 @@
+master:
+  host: mysql-1
+  user: root
+  password: password
+  port: 33006
+slave:
+  host: mysql-2
+  user: root
+  password: password
+  port: 33007
+proxysql:
+  host: proxysql
+  user: root
+  password: password
+  port: 33005

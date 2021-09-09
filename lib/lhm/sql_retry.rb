@@ -19,16 +19,16 @@ module Lhm
       @connection = connection
       @log_prefix = options.delete(:log_prefix)
       @retry_config = default_retry_config.dup.merge!(options)
-      @initial_host = hostname
+      # @initial_host = hostname
     end
 
     def with_retries
       Retriable.retriable(retry_config) do
         yield(@connection)
-      rescue ConnectionError
-        with_retry_for_host(retry_config) do
-          @connection.reconnect!
-        end
+      # rescue ConnectionError
+      #   with_retry_for_host(retry_config) do
+      #     @connection.reconnect!
+      #   end
       end
     end
 
@@ -47,6 +47,7 @@ module Lhm
         yield
         raise "Different MySQL server host than the initial host" if hostname != @initial_host
       end
+    #  TODO add unless raise exception
     end
 
     # For a full list of configuration options see https://github.com/kamui/retriable
