@@ -6,12 +6,12 @@ class ToxiproxyHelper
 
     Toxiproxy.populate([
       {
-        name: 'shopify_test_mysql_writer',
+        name: 'shopify_test_mysql_master',
         listen: '127.0.0.1:22220',
         upstream: '127.0.0.1:33006'
       },
       {
-        name: 'shopify_test_mysql_reader',
+        name: 'shopify_test_mysql_slave',
         listen: '127.0.0.1:22221',
         upstream: '127.0.0.1:33007'
       },

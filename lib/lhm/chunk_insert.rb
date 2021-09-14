@@ -16,12 +16,14 @@ module Lhm
     end
 
     def insert_and_return_count_of_rows_created
-      @retry_helper.with_retries do |retriable_connection|
-        retriable_connection.update sql
+      @retry_helper.with_retries do |retriable_connection, initial_host|
+        retriable_connection.update sql(initial_host)
       end
     end
 
-    def sql
+    def sql(initial_host)
+      #TODO CHECK PROXYSQL SYNTAX FOR CONSISTENT-READ-ID
+      "/* consistent-host-id:#{initial_host} */" \
       "insert ignore into `#{ @migration.destination_name }` (#{ @migration.destination_columns }) " \
       "select #{ @migration.origin_columns } from `#{ @migration.origin_name }` " \
       "#{ conditions } `#{ @migration.origin_name }`.`id` between #{ @lowest } and #{ @highest }"
