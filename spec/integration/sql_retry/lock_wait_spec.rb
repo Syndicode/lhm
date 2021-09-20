@@ -58,7 +58,7 @@ describe Lhm::SqlRetry do
         multiplier: 1, # subsequent retries wait 1x longer than first retry (no change)
         tries: 3, # we only need 3 tries (including the first) for the scenario described below
         rand_factor: 0 # do not introduce randomness to wait timer
-      })
+      }, false)
 
       # RetryTestHelper is configured to hold lock for 5 seconds and timeout after 2 seconds.
       # Therefore the sequence of events will be:
@@ -101,7 +101,7 @@ describe Lhm::SqlRetry do
         multiplier: 1, # subsequent retries wait 1x longer than first retry (no change)
         tries: 2, # we need 3 tries (including the first) for the scenario described below, but we only get two...we will fail
         rand_factor: 0 # do not introduce randomness to wait timer
-      })
+      }, false)
 
       # RetryTestHelper is configured to hold lock for 5 seconds and timeout after 2 seconds.
       # Therefore the sequence of events will be:
@@ -117,7 +117,7 @@ describe Lhm::SqlRetry do
     exception = assert_raises { @helper.trigger_wait_lock }
 
     assert_equal "Lock wait timeout exceeded; try restarting transaction", exception.message
-    assert_equal Mysql2::Error::TimeoutError, exception.class
+    assert_equal  Mysql2::Error::TimeoutError, exception.class
 
     assert_equal 2, @helper.record_count # no records inserted
     puts "*" * 64

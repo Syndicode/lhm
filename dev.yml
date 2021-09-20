@@ -5,7 +5,7 @@ up:
           or: [mysql@5.7]
           conflicts: [shopify/shopify/mysql-client, mysql-connector-c, mysql, mysql-client]
       - wget
-  - ruby: 2.6.5
+  - ruby: 2.7.0
   - bundler
   - docker
 <<<<<<< HEAD
@@ -25,7 +25,7 @@ up:
 #      down: ./dbdeployer/sandboxes/rsandbox_5_7_22/stop_all
   - custom:
       name: Docker Compose
-      met?: docker-compose ls | grep "lhm.*running\(.*\)"
+      met?: docker-compose ls | grep -ioE -q "lhm.*running\(4\)"
       meet: docker-compose up -d
 >>>>>>> 2d5f862 (Test & dev environment now running with docker-compose)
 
@@ -37,3 +37,5 @@ commands:
   logs:
     desc: "See the DB logs (ctrl-c + ctrl-c to exit)"
     run: docker-compose logs -f
+  clean:
+    run: docker-compose rm -v -s -f && docker-compose up -d

@@ -7,7 +7,8 @@ require 'lhm/chunk_insert'
 
 describe Lhm::ChunkInsert do
   before(:each) do
-    @connection = stub(:connection)
+    @connection = mock()
+    @connection.stubs(:execute).returns([["dummy"]])
     @origin = Lhm::Table.new('foo')
     @destination = Lhm::Table.new('bar')
   end

@@ -31,9 +31,14 @@ describe Lhm::AtomicSwitcher do
     it 'should retry and log on lock wait timeouts' do
       connection = mock()
       connection.stubs(:data_source_exists?).returns(true)
-      connection.stubs(:execute).raises(ActiveRecord::StatementInvalid, 'Lock wait timeout exceeded; try restarting transaction.').then.returns(true)
 
-      switcher = Lhm::AtomicSwitcher.new(@migration, connection, retriable: {base_interval: 0})
+      connection.stubs(:execute).returns([["dummy"]], [["dummy"]], [["dummy"]])
+                .then
+                .raises(ActiveRecord::StatementInvalid, 'Lock wait timeout exceeded; try restarting transaction.')
+                .then
+                .returns([["dummy"]]) # Matches initial host -> triggers retry
+
+      switcher = Lhm::AtomicSwitcher.new(@migration, connection, retriable: { tries: 3, base_interval: 0 })
 
       assert switcher.run
 
@@ -46,7 +51,17 @@ describe Lhm::AtomicSwitcher do
     it 'should give up on lock wait timeouts after a configured number of tries' do
       connection = mock()
       connection.stubs(:data_source_exists?).returns(true)
-      connection.stubs(:execute).twice.raises(ActiveRecord::StatementInvalid, 'Lock wait timeout exceeded; try restarting transaction.')
+      connection.stubs(:execute).returns([["dummy"]], [["dummy"]], [["dummy"]])
+                .then
+                .raises(ActiveRecord::StatementInvalid, 'Lock wait timeout exceeded; try restarting transaction.')
+                .then
+                .returns([["dummy"]]) # triggers retry 1
+                .then
+                .raises(ActiveRecord::StatementInvalid, 'Lock wait timeout exceeded; try restarting transaction.')
+                .then
+                .returns([["dummy"]]) # triggers retry 2
+                .then
+                .raises(ActiveRecord::StatementInvalid, 'Lock wait timeout exceeded; try restarting transaction.') # triggers retry 2
 
       switcher = Lhm::AtomicSwitcher.new(@migration, connection, retriable: {tries: 2, base_interval: 0})
 
@@ -64,6 +79,7 @@ describe Lhm::AtomicSwitcher do
     it "should raise when destination doesn't exist" do
       connection = mock()
       connection.stubs(:data_source_exists?).returns(false)
+      connection.expects(:execute).twice
 
       switcher = Lhm::AtomicSwitcher.new(@migration, connection)
 

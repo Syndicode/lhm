@@ -44,3 +44,10 @@ services:
     command: "proxysql -c /etc/proxysql.cnf -f --idle-threads"
     ports:
       - "33005:3306"
+  toxiproxy:
+    container_name: toxiproxy
+    image: "ghcr.io/shopify/toxiproxy"
+    ports:
+      - "8474:8474"
+      - "22220:22220"
+      - "22222:22222"

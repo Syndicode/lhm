@@ -70,7 +70,7 @@ class LockWaitTimeoutTestHelper
 
   def insert_records_at_ids(connection, ids)
     ids.each do |id|
-      connection.query "INSERT INTO #{test_table_name} (id) VALUES (#{id})"
+      mysql_exec(connection, "INSERT INTO #{test_table_name} (id) VALUES (#{id})")
     end
   end
 
@@ -79,15 +79,13 @@ class LockWaitTimeoutTestHelper
   attr_reader :main_conn, :lock_duration, :innodb_lock_wait_timeout
 
   def new_mysql_connection
-    client = Mysql2::Client.new(
+    Mysql2::Client.new(
       host: '127.0.0.1',
       username: db_config['master']['user'],
       password: db_config['master']['password'],
-      port: db_config['master']['port']
+      port: db_config['master']['port'],
+      database: test_db_name
     )
-
-    init_test_db(client)
-    client
   end
 
   def test_db_name
@@ -104,9 +102,13 @@ class LockWaitTimeoutTestHelper
 
   private
 
-  def init_test_db(client)
-    # For some reasons sometimes the database does not exist
-    client.query("CREATE DATABASE IF NOT EXISTS #{test_db_name}")
-    client.select_db(test_db_name)
+  def mysql_exec(connection, statement)
+    if connection.class == Mysql2::Client
+      connection.query(statement)
+    elsif connection.class.to_s.include?("ActiveRecord")
+      connection.execute(statement)
+    else
+      raise StandardError.new("Unrecognized MySQL client")
+    end
   end
 end

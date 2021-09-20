@@ -28,5 +28,16 @@ Rake::TestTask.new('dev') do |t|
   t.verbose = true
 end
 
+# `rake dev` allows to test a single file without the need to run the entire integration test suite
+Rake::TestTask.new('dev') do |t|
+  t.libs << 'lib'
+  t.libs << 'spec'
+  t.test_files = FileList[
+    'spec/test_helper.rb',
+    # Add path to file to test
+  ]
+  t.verbose = true
+end
+
 task :specs => [:unit, :integration]
 task :default => :specs

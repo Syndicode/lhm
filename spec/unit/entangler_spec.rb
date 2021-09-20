@@ -10,6 +10,8 @@ require 'lhm/entangler'
 describe Lhm::Entangler do
   include UnitHelper
 
+  MYSQL_EXECUTE_RETRY_OFFSET = 3
+
   before(:each) do
     @origin = Lhm::Table.new('origin')
     @destination = Lhm::Table.new('destination')
@@ -60,34 +62,67 @@ describe Lhm::Entangler do
     end
 
     it 'should retry trigger creation when it hits a lock wait timeout' do
-      connection = mock()
       tries = 1
-      @entangler = Lhm::Entangler.new(@migration, connection, retriable: {base_interval: 0, tries: tries})
-      connection.expects(:execute).times(tries).raises(Mysql2::Error, 'Lock wait timeout exceeded; try restarting transaction')
+
+      # Stubs initial hostname and server_id fetch + initial hostname comparison
+      connection = mock()
+      connection.stubs(:execute)
+                .returns([["dummy"]], [["dummy"]], [["dummy"]])
+                .then
+                .raises(Mysql2::Error, 'Lock wait timeout exceeded; try restarting transaction')
+      @entangler = Lhm::Entangler.new(@migration, connection, retriable: { base_interval: 0, tries: tries })
 
       assert_raises(Mysql2::Error) { @entangler.before }
     end
 
     it 'should not retry trigger creation with other mysql errors' do
-      connection = mock()
-      connection.expects(:execute).once.raises(Mysql2::Error, 'The MySQL server is running with the --read-only option so it cannot execute this statement.')
 
-      @entangler = Lhm::Entangler.new(@migration, connection, retriable: {base_interval: 0})
+      # Stubs initial hostname and server_id fetch + initial hostname comparison
+      connection = mock()
+      connection.stubs(:execute)
+                .returns([["dummy"]], [["dummy"]], [["dummy"]])
+                .then
+                .raises(Mysql2::Error, 'The MySQL server is running with the --read-only option so it cannot execute this statement.')
+
+      @entangler = Lhm::Entangler.new(@migration, connection, retriable: { base_interval: 0 })
       assert_raises(Mysql2::Error) { @entangler.before }
     end
 
     it 'should succesfully finish after retrying' do
+
+      # Stubs initial hostname and server_id fetch + initial hostname comparison
       connection = mock()
-      connection.stubs(:execute).raises(Mysql2::Error, 'Lock wait timeout exceeded; try restarting transaction').then.returns(true)
-      @entangler = Lhm::Entangler.new(@migration, connection, retriable: {base_interval: 0})
+      connection.stubs(:execute)
+                .returns([["dummy"]], [["dummy"]], [["dummy"]])
+                .then
+                .raises(Mysql2::Error, 'Lock wait timeout exceeded; try restarting transaction')
+                .then
+                .returns([["dummy"]])
+      @entangler = Lhm::Entangler.new(@migration, connection, retriable: { base_interval: 0 })
 
       assert @entangler.before
     end
 
     it 'should retry as many times as specified by configuration' do
       connection = mock()
-      connection.expects(:execute).times(5).raises(Mysql2::Error, 'Lock wait timeout exceeded; try restarting transaction')
-      @entangler = Lhm::Entangler.new(@migration, connection, retriable: {tries: 5, base_interval: 0})
+      connection.stubs(:execute)
+                .returns([["dummy"]], [["dummy"]], [["dummy"]]) # initial
+                .then
+                .raises(Mysql2::Error, 'Lock wait timeout exceeded; try restarting transaction')
+                .then
+                .returns([["dummy"]]) # reconnect 1
+                .then
+                .raises(Mysql2::Error, 'Lock wait timeout exceeded; try restarting transaction')
+                .then
+                .returns([["dummy"]])  # reconnect 2
+                .then
+                .raises(Mysql2::Error, 'Lock wait timeout exceeded; try restarting transaction')
+                .then
+                .returns([["dummy"]])  # reconnect 3
+                .then
+                .raises(Mysql2::Error, 'Lock wait timeout exceeded; try restarting transaction')  # final error
+
+      @entangler = Lhm::Entangler.new(@migration, connection, retriable: { tries: 3, base_interval: 0 })
 
       assert_raises(Mysql2::Error) { @entangler.before }
     end
