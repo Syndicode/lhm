@@ -1,10 +1,10 @@
 # Copyright (c) 2011 - 2013, SoundCloud Ltd., Rany Keddo, Tobias Bielohlawek, Tobias
 # Schmidt
-require 'lhm/command'
-require 'lhm/sql_helper'
-require 'lhm/printer'
-require 'lhm/chunk_insert'
-require 'lhm/chunk_finder'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/command'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/sql_helper'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/printer'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/chunk_insert'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/chunk_finder'
 
 module Lhm
   class Chunker

@@ -1,9 +1,9 @@
 # Copyright (c) 2011 - 2013, SoundCloud Ltd., Rany Keddo, Tobias Bielohlawek, Tobias
 # Schmidt
 
-require 'lhm/command'
-require 'lhm/migration'
-require 'lhm/sql_retry'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/command'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/migration'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/sql_retry'
 
 module Lhm
   # Switches origin with destination table using an atomic rename.

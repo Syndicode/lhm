@@ -1,6 +1,6 @@
-require 'lhm/throttler/time'
-require 'lhm/throttler/slave_lag'
-require 'lhm/throttler/threads_running'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/throttler/time'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/throttler/slave_lag'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/throttler/threads_running'
 
 module Lhm
   module Throttler

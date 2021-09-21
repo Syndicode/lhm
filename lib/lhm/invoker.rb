@@ -1,11 +1,11 @@
 # Copyright (c) 2011 - 2013, SoundCloud Ltd., Rany Keddo, Tobias Bielohlawek, Tobias
 # Schmidt
 
-require 'lhm/chunker'
-require 'lhm/entangler'
-require 'lhm/atomic_switcher'
-require 'lhm/locked_switcher'
-require 'lhm/migrator'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/chunker'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/entangler'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/atomic_switcher'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/locked_switcher'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/migrator'
 
 module Lhm
   # Copies an origin table to an altered destination table. Live activity is

@@ -1,8 +1,8 @@
 # Copyright (c) 2011 - 2013, SoundCloud Ltd., Rany Keddo, Tobias Bielohlawek, Tobias
 # Schmidt
 
-require 'lhm/intersection'
-require 'lhm/timestamp'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/intersection'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/timestamp'
 
 module Lhm
   class Migration

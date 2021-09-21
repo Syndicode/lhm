@@ -1,15 +1,15 @@
 # Copyright (c) 2011 - 2013, SoundCloud Ltd., Rany Keddo, Tobias Bielohlawek, Tobias
 # Schmidt
 
-require 'lhm/table_name'
-require 'lhm/table'
-require 'lhm/invoker'
-require 'lhm/throttler'
-require 'lhm/version'
-require 'lhm/cleanup/current'
-require 'lhm/sql_retry'
-require 'lhm/test_support'
-require 'lhm/railtie' if defined?(Rails::Railtie)
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/table_name'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/table'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/invoker'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/throttler'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/version'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/cleanup/current'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/sql_retry'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/test_support'
+require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/railtie' if defined?(Rails::Railtie)
 require 'logger'
 
 # Large hadron migrator - online schema change tool
