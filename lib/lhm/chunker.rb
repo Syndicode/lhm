@@ -46,7 +46,7 @@ module Lhm
         top = upper_id(@next_to_insert, stride)
         verify_can_run
 
-        affected_rows = ChunkInsert.new(@migration, @connection, bottom, top, @options).insert_and_return_count_of_rows_created
+        affected_rows = ChunkInsert.new(@migration, @retry_helper, bottom, top, @options).insert_and_return_count_of_rows_created
         expected_rows = top - bottom + 1
 
         # Only log the chunker progress every 5 minutes instead of every iteration

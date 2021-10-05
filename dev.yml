@@ -8,26 +8,14 @@ up:
   - ruby: 2.7.0
   - bundler
   - docker
-<<<<<<< HEAD
   - custom:
       name: Docker Compose
-      met?: docker compose ls | grep -ioE -q "lhm.*running\(3\)"
+      met?: docker compose ls | grep -ioE -q "lhm.*running\(4\)"
       meet: docker compose up -d
   - custom:
       name: Waiting for DBs to be operational
       met?: ./scripts/helpers/wait-for-dbs.sh
       meet: ":"
-=======
-#  - custom:
-#      name: Database
-#      met?: test -f spec/integration/database.yml && test "$(./dbdeployer/sandboxes/rsandbox_5_7_22/status_all | grep on\  | wc -l | xargs echo)" = "2"
-#      meet: ./dbdeployer/install.sh
-#      down: ./dbdeployer/sandboxes/rsandbox_5_7_22/stop_all
-  - custom:
-      name: Docker Compose
-      met?: docker-compose ls | grep -ioE -q "lhm.*running\(4\)"
-      meet: docker-compose up -d
->>>>>>> 2d5f862 (Test & dev environment now running with docker-compose)
 
 commands:
   unit: bundle exec rake unit

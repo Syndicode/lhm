@@ -11,7 +11,8 @@ describe Lhm::ChunkInsert do
       @destination = table_create(:destination)
       @migration = Lhm::Migration.new(@origin, @destination)
       execute("insert into origin set id = 1001")
-      @instance = Lhm::ChunkInsert.new(@migration, connection, 1001, 1001)
+      sql_retry = Lhm::SqlRetry.new(connection)
+      @instance = Lhm::ChunkInsert.new(@migration, sql_retry, 1001, 1001)
     end
 
     it "returns the count" do

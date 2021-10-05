@@ -30,7 +30,10 @@ module Lhm
       end
     end
 
-    def with_retries
+    def with_retries(override_prefix=nil)
+      old_prefix =  @log_prefix
+      @log_prefix = override_prefix unless override_prefix.nil?
+
       Retriable.retriable(retry_config) do
         if @with_consistent_host
           raise Lhm::Error.new("Could not reconnected to initial MySQL host. Aborting to avoid data-loss") unless same_host_as_initial?
@@ -44,6 +47,8 @@ module Lhm
         raise e unless error_can_trigger_reconnect?(e)
         reconnect_with_host_check! if @with_consistent_host
       end
+    ensure
+      @log_prefix = old_prefix
     end
 
     attr_reader :retry_config
