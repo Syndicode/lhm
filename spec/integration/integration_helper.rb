@@ -6,7 +6,7 @@ require 'active_support'
 require 'logger'
 
 begin
-  $db_config = YAML.load_file(File.expand_path(File.dirname(__FILE__)) + '/database-new.yml')
+  $db_config = YAML.load_file(File.expand_path(File.dirname(__FILE__)) + '/database.yml')
 rescue StandardError => e
   puts "Run install.sh to setup database"
   raise e
@@ -79,12 +79,10 @@ module IntegrationHelper
       :username => user,
       :port     => port,
       :password => password,
+      :database => $db_name
     )
 
-    conn = ActiveRecord::Base.connection
-
-    init_test_db_ar(conn)
-    conn
+    ActiveRecord::Base.connection
   end
 
   def select_one(*args)
@@ -167,16 +165,14 @@ module IntegrationHelper
   end
 
   def new_mysql_connection(role='master')
-    client = Mysql2::Client.new(
+    Mysql2::Client.new(
       host: '127.0.0.1',
+      database: $db_name,
       username: $db_config[role]['user'],
       password: $db_config[role]['password'],
       port: $db_config[role]['port'],
-      socket: $db_config[role]['socket']
+      socket: $db_config[role]['socket'],
     )
-
-    init_test_db(client)
-    client
   end
 
   #
@@ -246,17 +242,5 @@ module IntegrationHelper
       alias_method :after, :old_after
       undef_method :old_after
     end
-  end
-
-  private
-
-  def init_test_db(conn)
-    conn.query("CREATE DATABASE IF NOT EXISTS #{$db_name}")
-    conn.select_db($db_name)
-  end
-
-  def init_test_db_ar(conn)
-    conn.execute("CREATE DATABASE IF NOT EXISTS #{$db_name}")
-    conn.execute("USE #{$db_name}")
   end
 end

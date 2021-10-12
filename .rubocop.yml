@@ -20,7 +20,7 @@ Metrics/CyclomaticComplexity:
 
 # Offense count: 77
 # Configuration parameters: AllowURI, URISchemes.
-Layout/LineLength:
+Metrics/LineLength:
   Max: 197
 
 # Offense count: 11
@@ -44,6 +44,12 @@ Style/AndOr:
 Style/BarePercentLiterals:
   Enabled: false
 
+# Offense count: 11
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+Style/BracesAroundHashParameters:
+  Enabled: false
+
 # Offense count: 5
 Style/ClassVars:
   Enabled: false
@@ -61,7 +67,7 @@ Style/Documentation:
 # Offense count: 28
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
-Layout/DotPosition:
+Style/DotPosition:
   Enabled: false
 
 # Offense count: 4
@@ -74,7 +80,7 @@ Style/EachWithObject:
 
 # Offense count: 1
 # Configuration parameters: Exclude.
-Naming/FileName:
+Style/FileName:
   Enabled: false
 
 # Offense count: 11
@@ -101,6 +107,12 @@ Style/HashSyntax:
 # Offense count: 3
 # Configuration parameters: MaxLineLength.
 Style/IfUnlessModifier:
+  Enabled: false
+
+# Offense count: 14
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+Style/IndentHash:
   Enabled: false
 
 # Offense count: 2
@@ -140,6 +152,11 @@ Style/SignalException:
   EnforcedStyle: only_raise
   Enabled: true
 
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces, SupportedStyles.
+Style/SpaceInsideHashLiteralBraces:
+  SupportedStyles: space
+
 # Offense count: 2
 # Cop supports --auto-correct.
 Style/SpecialGlobalVars:
@@ -153,7 +170,7 @@ Style/TrivialAccessors:
 
 # Offense count: 15
 # Cop supports --auto-correct.
-Style/RedundantPercentQ:
+Style/UnneededPercentQ:
   Enabled: false
 
 # Offense count: 3
@@ -164,16 +181,3 @@ Style/WordArray:
 # Offense count: 7
 Metrics/AbcSize:
   Max: 31
-
-Metrics/BlockLength:
-  Exclude:
-    - 'spec/**/*'
-
-Layout/FirstHashElementIndentation:
-  EnforcedStyle: consistent
-
-Style/StringLiterals:
-  Enabled: false
-
-Layout/FirstArrayElementIndentation:
-  EnforcedStyle: consistent

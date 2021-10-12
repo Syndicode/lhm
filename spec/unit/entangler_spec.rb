@@ -10,8 +10,6 @@ require 'lhm/entangler'
 describe Lhm::Entangler do
   include UnitHelper
 
-  MYSQL_EXECUTE_RETRY_OFFSET = 3
-
   before(:each) do
     @origin = Lhm::Table.new('origin')
     @destination = Lhm::Table.new('destination')

@@ -93,7 +93,7 @@ class LockWaitTimeoutTestHelper
   end
 
   def db_config
-    @db_config ||= YAML.load_file(File.expand_path(File.dirname(__FILE__)) + '/../database-new.yml')
+    @db_config ||= YAML.load_file(File.expand_path(File.dirname(__FILE__)) + '/../database.yml')
   end
 
   def test_table_name

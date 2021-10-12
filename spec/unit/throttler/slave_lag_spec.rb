@@ -74,7 +74,7 @@ describe Lhm::Throttler::Slave do
     describe 'with active record config' do
       it 'logs and creates client' do
         active_record_config = {username: 'user', password: 'pw', database: 'db'}
-        ActiveRecord::Base.stubs(:connection_pool).returns(stub(spec: stub(config: active_record_config)))
+        ActiveRecord::Base.stubs(:connection_pool).returns(stub(db_config: stub(configuration_hash: active_record_config)))
 
         Mysql2::Client.stubs(:new).returns(mock())
 

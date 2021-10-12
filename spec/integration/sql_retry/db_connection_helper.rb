@@ -3,7 +3,7 @@ require 'mysql2'
 
 class DBConnectionHelper
 
-  DATABASE_CONFIG_FILE = "database-new.yml"
+  DATABASE_CONFIG_FILE = "database.yml"
 
   class << self
     def db_config
@@ -23,7 +23,6 @@ class DBConnectionHelper
         :port => db_config[key]['port']
       )
       conn = conn.connection
-      init_test_db(conn)
       init_with_dummy_data(conn) if with_data
       conn
     end
@@ -38,11 +37,6 @@ class DBConnectionHelper
 
     def test_table_name
       @test_table_name ||= "test"
-    end
-
-    def init_test_db(client)
-      # For some reasons sometimes the database does not exist
-      client.execute("CREATE DATABASE IF NOT EXISTS #{test_db_name}")
     end
 
     def init_with_dummy_data(conn)

@@ -8,4 +8,3 @@ MASTER_CONNECT_RETRY=1,
 MASTER_RETRY_COUNT=300; -- 5 minutes
 
 start slave;
-

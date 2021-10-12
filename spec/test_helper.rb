@@ -6,23 +6,19 @@ if ENV['COV']
   SimpleCov.start
 end
 
+require 'minitest/autorun'
+require 'minitest/spec'
+require 'minitest/mock'
+require 'mocha/minitest'
 require 'pathname'
+require 'byebug'
+require 'lhm'
 
 $project = Pathname.new(File.dirname(__FILE__) + '/..').cleanpath
 $spec = $project.join('spec')
 $fixtures = $spec.join('fixtures')
 
-$LOAD_PATH.unshift($project) unless $LOAD_PATH.include?($project)
-
 $db_name = 'test'
-
-require 'minitest/autorun'
-require 'minitest/spec'
-require 'minitest/mock'
-require 'mocha/minitest'
-require 'byebug'
-require 'lhm'
-
 
 require 'active_record'
 require 'mysql2'
@@ -52,7 +48,7 @@ def throttler
 end
 
 def init_test_db
-  db_config = YAML.load_file(File.expand_path(File.dirname(__FILE__)) + '/integration/database-new.yml')
+  db_config = YAML.load_file(File.expand_path(File.dirname(__FILE__)) + '/integration/database.yml')
   conn = Mysql2::Client.new(
     :host => '127.0.0.1',
     :username => db_config['master']['user'],
