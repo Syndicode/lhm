@@ -109,6 +109,28 @@ end
 to prevent accidental data loss. After successful or failed LHM migrations, these leftover
 tables must be cleaned up.
 
+### Usage with ProxySQL
+LHM has features to recover from connexion loss that are "ProxySQL-aware". There are multiple ways that connection loss could
+induce data loss. Therefore, if LHM is used with ProxySQL, it will check that the MySQL host is consistent across the schema migrations. 
+Here are the required steps to use LHM with ProxySQL:
+1) Ensure that the ActiveRecord::QueryLogs context is set (requires ActiveRecord >= 7.0.0.aplha2). Ex:
+```ruby
+ActiveRecord::QueryLogs.set_context(maintenance: "lhm") do
+   Lhm.setup(conn)
+   // Run LHM
+end
+``` 
+_Note: Other Query annotations could work (i.e. Magnolia), but this feature is only tested with ActiveRecord::QueryLogs_
+2) Add a `mysql_query_rule`:
+```
+{
+  rule_id = 4
+  active = 1
+  match_pattern = "maintenance:lhm"
+  destination_hostgroup = <MySQL writer's hostgroup>
+}
+```
+
 ## Throttler
 
 LHM uses a throttling mechanism to read data in your original table. By default, 2,000 rows are read each 0.1 second. If you want to change that behaviour, you can pass an instance of a throttler with the `throttler` option. In this example, 1,000 rows will be read with a 10 second delay between each processing:
