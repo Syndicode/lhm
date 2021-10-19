@@ -72,11 +72,11 @@ module Lhm
     end
 
     def update_state_before_execute
-      Lhm.progress.update_state("switching_tables")
+      Lhm.progress.update_state(Lhm::STATE_SWITCHING_TABLES)
     end
 
     def update_state_after_execute
-      Lhm.progress.update_state("switched_tables")
+      Lhm.progress.update_state(Lhm::STATE_SWITCHED_TABLES)
     end
 
     def update_state_when_revert
