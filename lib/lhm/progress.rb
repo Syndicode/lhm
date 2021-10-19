@@ -79,7 +79,7 @@ module Lhm
         "destination_table" => @origin.destination_name,
         "throttler" => @throttler,
         "table_switcher" => @table_switcher,
-        "avg_row_length" => @avg_row_length,
+        "avg_row_length" => "#{@avg_row_length} bytes",
         "estimated_bytes_copied" => @bytes_copied,
         "estimated_total_bytes" => @total_bytes,
         "completion_percentage" => "#{@completion_percentage}% complete",
