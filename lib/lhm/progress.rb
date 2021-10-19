@@ -59,8 +59,6 @@ module Lhm
         @printer.notify(serialized_progress)
         @start_time = current_time
       end
-
-      @printer.notify(serialized_progress)
     end
 
     def update_state(state)
