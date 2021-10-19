@@ -1,9 +1,9 @@
 # Copyright (c) 2011 - 2013, SoundCloud Ltd., Rany Keddo, Tobias Bielohlawek, Tobias
 # Schmidt
 
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/command'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/sql_helper'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/sql_retry'
+require 'lhm/command'
+require 'lhm/sql_helper'
+require 'lhm/sql_retry'
 
 module Lhm
   class Entangler
@@ -108,6 +108,18 @@ module Lhm
 
     def revert
       after
+    end
+
+    def update_state_before_block
+      Lhm.progress.update_state(Lhm::STATE_SETUP_DONE)
+    end
+
+    def update_state_when_revert
+      Lhm.progress.update_state(Lhm::STATE_SETUP_FAILED)
+    end
+
+    def update_state_after_block
+      Lhm.progress.update_state(Lhm::STATE_TRIGGERS_DROPPED)
     end
 
     private

@@ -1,4 +1,4 @@
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/sql_retry'
+require 'lhm/sql_retry'
 
 module Lhm
   class ChunkInsert

@@ -1,10 +1,10 @@
 # Copyright (c) 2011 - 2013, SoundCloud Ltd., Rany Keddo, Tobias Bielohlawek, Tobias
 # Schmidt
 
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/command'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/migration'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/sql_helper'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/table'
+require 'lhm/command'
+require 'lhm/migration'
+require 'lhm/sql_helper'
+require 'lhm/table'
 
 module Lhm
   # Copies existing schema and applies changes using alter on the empty table.

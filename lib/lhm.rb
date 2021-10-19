@@ -1,15 +1,16 @@
 # Copyright (c) 2011 - 2013, SoundCloud Ltd., Rany Keddo, Tobias Bielohlawek, Tobias
 # Schmidt
 
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/table_name'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/table'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/invoker'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/throttler'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/version'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/cleanup/current'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/sql_retry'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/test_support'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/railtie' if defined?(Rails::Railtie)
+require 'lhm/table_name'
+require 'lhm/table'
+require 'lhm/progress'
+require 'lhm/invoker'
+require 'lhm/throttler'
+require 'lhm/version'
+require 'lhm/cleanup/current'
+require 'lhm/sql_retry'
+require 'lhm/test_support'
+require 'lhm/railtie' if defined?(Rails::Railtie)
 require 'logger'
 
 # Large hadron migrator - online schema change tool
@@ -49,6 +50,7 @@ module Lhm
   # @raise [Error] Raises Lhm::Error in case of a error and aborts the migration
   def change_table(table_name, options = {}, &block)
     origin = Table.parse(table_name, connection)
+    @@progress = Progress.new(origin, connection, options)
     invoker = Invoker.new(origin, connection)
     block.call(invoker.migrator)
     invoker.run(options)
@@ -95,6 +97,10 @@ module Lhm
 
   def self.logger=(new_logger)
     @@logger = new_logger
+  end
+
+  def self.progress
+    @@progress
   end
 
   def self.logger

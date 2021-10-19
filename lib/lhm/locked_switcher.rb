@@ -1,9 +1,9 @@
 # Copyright (c) 2011 - 2013, SoundCloud Ltd., Rany Keddo, Tobias Bielohlawek, Tobias
 # Schmidt
 
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/command'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/migration'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/sql_helper'
+require 'lhm/command'
+require 'lhm/migration'
+require 'lhm/sql_helper'
 
 module Lhm
   # Switches origin with destination table nonatomically using a locked write.
@@ -69,6 +69,18 @@ module Lhm
       statements.each do |stmt|
         @connection.execute(tagged(stmt))
       end
+    end
+
+    def update_state_before_execute
+      Lhm.progress.update_state("switching_tables")
+    end
+
+    def update_state_after_execute
+      Lhm.progress.update_state("switched_tables")
+    end
+
+    def update_state_when_revert
+      Lhm.progress.update_state(Lhm::STATE_SWITCHING_TABLES_FAILED)
     end
   end
 end

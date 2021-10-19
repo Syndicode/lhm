@@ -1,10 +1,10 @@
 # Copyright (c) 2011 - 2013, SoundCloud Ltd., Rany Keddo, Tobias Bielohlawek, Tobias
 # Schmidt
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/command'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/sql_helper'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/printer'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/chunk_insert'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/chunk_finder'
+require 'lhm/command'
+require 'lhm/sql_helper'
+require 'lhm/printer'
+require 'lhm/chunk_insert'
+require 'lhm/chunk_finder'
 
 module Lhm
   class Chunker
@@ -27,7 +27,6 @@ module Lhm
       end
       @start = @chunk_finder.start
       @limit = @chunk_finder.limit
-      @printer = options[:printer] || Printer::Percentage.new
       @retry_helper = SqlRetry.new(
         @connection,
         {
@@ -37,9 +36,10 @@ module Lhm
     end
 
     def execute
-      @start_time = Time.now
-
       return if @chunk_finder.table_empty?
+
+      Lhm.progress.update_before_copy(@chunk_finder.start, @chunk_finder.limit)
+
       @next_to_insert = @start
       while @next_to_insert <= @limit || (@start == @limit)
         stride = @throttler.stride
@@ -49,13 +49,6 @@ module Lhm
         affected_rows = ChunkInsert.new(@migration, @connection, bottom, top, @options).insert_and_return_count_of_rows_created
         expected_rows = top - bottom + 1
 
-        # Only log the chunker progress every 5 minutes instead of every iteration
-        current_time = Time.now
-        if current_time - @start_time > (5 * 60)
-          Lhm.logger.info("Inserted #{affected_rows} rows into the destination table from #{bottom} to #{top}")
-          @start_time = current_time
-        end
-
         if affected_rows < expected_rows
           raise_on_non_pk_duplicate_warning
         end
@@ -64,15 +57,27 @@ module Lhm
           @throttler.run
         end
 
+        Lhm.progress.update_during_copy(@next_to_insert, affected_rows)
         @next_to_insert = top + 1
-        @printer.notify(bottom, @limit)
+       
 
         break if @start == @limit
       end
-      @printer.end
     rescue => e
-      @printer.exception(e) if @printer.respond_to?(:exception)
+      Lhm.logger.error("failed: #{e}")
       raise
+    end
+
+    def update_state_before_execute
+      Lhm.progress.update_state(Lhm::STATE_COPYING)
+    end
+
+    def update_state_after_execute
+      Lhm.progress.update_state(Lhm::STATE_COPYING_DONE)
+    end
+
+    def update_state_when_revert
+      Lhm.progress.update_state(Lhm::STATE_COPYING_FAILED)
     end
 
     private
@@ -111,6 +116,5 @@ module Lhm
       return if @chunk_finder.table_empty?
       @chunk_finder.validate
     end
-
   end
 end

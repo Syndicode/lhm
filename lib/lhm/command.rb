@@ -7,18 +7,25 @@ module Lhm
 
   module Command
     def run(&block)
-      Lhm.logger.info "Starting run of class=#{self.class}"
       validate
 
       if block_given?
         before
+        update_state_before_block
         block.call(self)
         after
+        update_state_after_block
       else
-        execute
+        update_state_before_execute
+        value = execute
+        update_state_after_execute
+
+        value
       end
     rescue => e
       Lhm.logger.error "Error in class=#{self.class}, reverting. exception=#{e.class} message=#{e.message}"
+      update_state_when_revert
+      
       revert
       raise
     end
@@ -29,6 +36,21 @@ module Lhm
     end
 
     def revert
+    end
+
+    def update_state_when_revert
+    end
+
+    def update_state_before_execute
+    end
+
+    def update_state_after_execute
+    end
+
+    def update_state_before_block
+    end
+
+    def update_state_after_block
     end
 
     def execute

@@ -1,5 +1,5 @@
 require 'retriable'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/sql_helper'
+require 'lhm/sql_helper'
 
 module Lhm
   # SqlRetry standardizes the interface for retry behavior in components like

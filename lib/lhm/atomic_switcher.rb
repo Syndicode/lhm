@@ -1,9 +1,9 @@
 # Copyright (c) 2011 - 2013, SoundCloud Ltd., Rany Keddo, Tobias Bielohlawek, Tobias
 # Schmidt
 
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/command'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/migration'
-require '/Users/mananmaniyar/src/github.com/Shopify/lhm/lib/lhm/sql_retry'
+require 'lhm/command'
+require 'lhm/migration'
+require 'lhm/sql_retry'
 
 module Lhm
   # Switches origin with destination table using an atomic rename.
@@ -47,6 +47,14 @@ module Lhm
       @retry_helper.with_retries do |retriable_connection|
         retriable_connection.execute atomic_switch
       end
+    end
+
+    def update_state_before_execute
+      Lhm.progress.update_state(Lhm::STATE_SWITCHING_TABLES)
+    end
+
+    def update_state_after_execute
+      Lhm.progress.update_state(Lhm::STATE_SWITCHED_TABLES)
     end
   end
 end

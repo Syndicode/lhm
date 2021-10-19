@@ -17,17 +17,8 @@ module Lhm
         @max_length = 0
       end
 
-      def notify(lowest, highest)
-        return if !highest || highest == 0
-
-        # The argument lowest represents the next_to_insert row id, and highest represents the 
-        # maximum id upto which chunker has to copy the data. 
-        # If all the rows are inserted upto highest, then lowest passed here from chunker was 
-        # highest + 1, which leads to the printer printing the progress > 100%.
-        return if lowest >= highest
-        
-        message = "%.2f%% (#{lowest}/#{highest}) complete" % (lowest.to_f / highest * 100.0)
-        write(message)
+      def notify(progress)
+        Lhm.logger.info(progress)
       end
 
       def end
