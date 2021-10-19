@@ -61,7 +61,7 @@ describe Lhm::SqlRetry, "ProxiSQL tests for LHM retry" do
     logs = @logger.string.split("\n")
 
     assert logs.first.include?("Lost connection to MySQL, will retry to connect to same host")
-    assert logs.last.include?("LHM successfully reconnected to initial host: mysql-1 -- triggering retry")
+    assert logs.last.include?("LHM successfully reconnected to initial host")
   end
 
   it "Will abort if new writer is not same host" do
