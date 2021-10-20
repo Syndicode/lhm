@@ -100,7 +100,7 @@ mysql_query_rules:
     {
       rule_id = 2
       active = 1
-      match_digest = "@@global\.server_id"
+      match_digest = "@@global\.server_uuid"
       multiplex = 2
     },
     {

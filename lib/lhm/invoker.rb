@@ -90,6 +90,8 @@ module Lhm
         options[:throttler] = Lhm.throttler
       end
 
+      options[:reconnect_consistent_host] ||= false
+
     rescue => e
       Lhm.logger.error "LHM run failed with exception=#{e.class} message=#{e.message}"
       raise

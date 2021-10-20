@@ -44,6 +44,10 @@ module Lhm
   #   Use atomic switch to rename tables (defaults to: true)
   #   If using a version of mysql affected by atomic switch bug, LHM forces user
   #   to set this option (see SqlHelper#supports_atomic_switch?)
+  # @option options [Boolean] :reconnect_consistent_host
+  #   Lhm should reconnect on connection loss (defaults to: false).
+  #   If this is set to true, Lhm will reconnect on connection loss. There will also check that the hostname is the same.
+  #   If used with ProxySQL, the steps in the README should be followed to ensure that the code works correctly.
   # @yield [Migrator] Yielded Migrator object records the changes
   # @return [Boolean] Returns true if the migration finishes
   # @raise [Error] Raises Lhm::Error in case of a error and aborts the migration

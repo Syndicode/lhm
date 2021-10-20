@@ -32,7 +32,8 @@ module Lhm
         @connection,
         {
           log_prefix: "Chunker"
-        }.merge!(options.fetch(:retriable, {}))
+        }.merge!(options.fetch(:retriable, {})),
+        options[:reconnect_consistent_host]
       )
     end
 

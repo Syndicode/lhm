@@ -10,7 +10,7 @@ module Lhm
     end
 
     def insert_and_return_count_of_rows_created
-      @retry_helper.with_retries("Chunker Insert") do |retriable_connection|
+      @retry_helper.with_retries(override_prefix: "Chunker Insert") do |retriable_connection|
         retriable_connection.update sql
       end
     end

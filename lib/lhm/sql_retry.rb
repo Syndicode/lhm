@@ -21,7 +21,7 @@ module Lhm
     # This internal error is used to trigger retries from the parent Retriable.retriable in #with_retries
     class ReconnectToHostSuccessful < Lhm::Error; end
 
-    def initialize(connection, options = {}, with_consistent_host = true, retry_for_host_options = {})
+    def initialize(connection, options = {}, with_consistent_host = false, retry_for_host_options = {})
       @connection = connection
       @log_prefix = options.delete(:log_prefix)
       @retry_config = default_retry_config.dup.merge!(options)
@@ -33,7 +33,7 @@ module Lhm
     end
 
     # Complete explanation of algorithm: https://github.com/Shopify/db-engineering/issues/98#issuecomment-934948590
-    def with_retries(override_prefix = nil)
+    def with_retries(override_prefix: nil)
       # Overrides log prefix if necessary or passed from parent to child instance (ex: Chunker -> ChunkInsert)
       old_prefix = @log_prefix
       @log_prefix = override_prefix unless override_prefix.nil?
@@ -49,8 +49,9 @@ module Lhm
         end
       rescue StandardError => e
         # Not all errors should trigger a reconnect. Some errors such be raised and abort the LHM (such as reconnecting to the wrong host).
-        raise e unless error_can_trigger_reconnect?(e)
-        reconnect_with_host_check! if @with_consistent_host
+        # Note: Will only try to reconnect if the required
+        raise e unless @with_consistent_host && error_can_trigger_reconnect?(e)
+        reconnect_with_host_check!
       end
     ensure
       # Restore the initial log prefix once outside of the block (ex: Chunker -> ChunkInsert).
