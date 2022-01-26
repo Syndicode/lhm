@@ -3,14 +3,17 @@ module Lhm
     class ThreadsRunning
       include Command
 
+      DEFAULT_STRIDE = 2_000
       DEFAULT_INITIAL_TIMEOUT = 0.1
       DEFAULT_HEALTHY_RANGE = (0..50)
 
       attr_accessor :timeout_seconds, :healthy_range, :connection
+      attr_accessor :stride
       attr_reader :max_timeout_seconds, :initial_timeout_seconds
 
       def initialize(options = {})
         @initial_timeout_seconds = options[:initial_timeout] || DEFAULT_INITIAL_TIMEOUT
+        @stride = options[:stride] || DEFAULT_STRIDE
         @max_timeout_seconds = options[:max_timeout] || (@initial_timeout_seconds * 1024)
         @timeout_seconds = @initial_timeout_seconds
         @healthy_range = options[:healthy_range] || DEFAULT_HEALTHY_RANGE
