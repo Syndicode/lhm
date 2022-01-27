@@ -164,6 +164,8 @@ module Lhm
             /Unknown MySQL server host/,
             /connection is locked to hostgroup/,
             /The MySQL server is running with the --read-only option so it cannot execute this statement/,
+            # AWS Aurora-specific error:
+            /parallel query failed, please retry/,
           ]
         },
         multiplier: 1, # each successive interval grows by this factor
