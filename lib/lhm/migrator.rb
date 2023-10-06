@@ -210,8 +210,8 @@ module Lhm
     end
 
     def destination_create
-      original    = %{CREATE TABLE `#{ @origin.name }`}
-      replacement = %{CREATE TABLE `#{ @origin.destination_name }`}
+      original    = %r{CREATE TABLE ("|`)#{ @origin.name }("|`)}
+      replacement = %{CREATE TABLE \\1#{ @origin.destination_name }\\2}
       stmt = @origin.ddl.gsub(original, replacement)
       @connection.execute(tagged(stmt))
 
